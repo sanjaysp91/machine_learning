@@ -40,23 +40,46 @@ Theta_grad = zeros(size(Theta));
 %                     partial derivatives w.r.t. to each element of Theta
 %
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+% Cost w/o regularization 
+J = 0.5 * sum(sum(((X * Theta' - Y).^2) .* R));
+% Cost with regularization 
+J = J + (lambda/2) * (sum(Theta(:).^2) + sum(X(:).^2)); 
 % =============================================================
+% gradient
 
+% feature grad 
+for i = 1:num_movies
+    % which user rated this movie?
+    idx = find(R(i,:)==1);
+    % only users who rated 
+    Theta_temp = Theta(idx,:);
+    % rating only from users who rated i movie 
+    Y_temp = Y(i,idx);
+    
+    % gradient w/o regularization 
+    X_grad(i, :) = (X(i, :) * Theta_temp' - Y_temp) * Theta_temp;
+    
+    % gradient with regularization 
+    X_grad(i, :) = X_grad(i, :) + lambda * X(i,:);
+end
+
+% param grad 
+for j = 1:num_users
+    % which movies were rated by this user?
+    idx = find(R(:,j)==1);
+    % only movies which were rated  
+    X_temp = X(idx,:);
+    % ratings only for movies which got rated by j user 
+    Y_temp = Y(idx,j);
+    
+    % gradient w/o regularization 
+    Theta_grad(j, :) = (X_temp * Theta(j,:)' - Y_temp)' * X_temp; 
+    
+    % gradient with regularization 
+    Theta_grad(j, :) = Theta_grad(j, :) + lambda * Theta(j,:);
+end
+
+% parameter grad 
 grad = [X_grad(:); Theta_grad(:)];
 
 end

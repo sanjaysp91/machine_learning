@@ -19,12 +19,12 @@ S = zeros(n);
 % Note: When computing the covariance matrix, remember to divide by m (the
 %       number of examples).
 %
-
-
-
-
-
-
+% compure covariance matrix 
+sigma_mat = (1/m) .* (X' * X); 
+[U, S, V] = svd(sigma_mat);
+fprintf('\nU = \n'); disp(U)
+fprintf('\nS = \n'); disp(S)
+fprintf('\nV = \n'); disp(V)
 
 % =========================================================================
 
